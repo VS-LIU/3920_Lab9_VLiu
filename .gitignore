@@ -2,3 +2,6 @@ node_modules/
 *.zip
 .env
 package-lock.json
+lab9_pets_pet_type.sql
+lab9_pets_pet.sql
+lab9_pets_web_user.sql
