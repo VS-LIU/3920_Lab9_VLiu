@@ -4,6 +4,8 @@ const router = require('express').Router();
 //const dbModel = include('staticData');
 // Lab9_step_8:
 const userModel = include('models/web_user'); 
+const petModel = include('models/pet'); 
+const petTypeModel = include('models/pet_type'); 
 const bcrypt = require('bcrypt');
 
 // router.get('/', async (req, res) => {
@@ -84,6 +86,30 @@ router.get('/', async (req, res) => {
 		console.log(ex); 
 	} 
 }); 
+
+router.get('/pets', async (req, res) => { 
+	console.log("page hit: router.get('/pets', async (req, res)"); 
+	try { 
+		const pets = await petModel.findAll(
+			{
+				attributes: ['pet_id','web_user_id','name','pet_type_id']
+			}); 
+		
+		if (pets === null) { 
+			res.render('error', {message: 'Error connecting to MySQL'}); 
+			console.log("Error connecting to petModel"); 
+		} else { 
+			console.log(pets); 
+			res.render('pets', {allPets: pets}); 
+		} 
+	} 
+	catch(ex) { 
+		res.render('error', {message: 'Error connecting to MySQL'}); 
+		console.log("Error connecting to MySQL"); 
+		console.log(ex); 
+	} 
+}); 
+
 
 router.get('/deleteUser', async (req, res) => { 
 	try { 
