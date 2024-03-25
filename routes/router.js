@@ -4,7 +4,7 @@ const router = require('express').Router();
 //const dbModel = include('staticData');
 // Lab9_step_8:
 const userModel = include('models/web_user'); 
- 
+const bcrypt = require('bcrypt');
 
 // router.get('/', async (req, res) => {
 // 	console.log("page hit");
@@ -108,6 +108,29 @@ router.get('/deleteUser', async (req, res) => {
 	} 
 }); 
 
+router.post('/addUser', async (req, res) => { 
+	try { 
+		console.log("form submit"); 
+		
+		const password_hash = await bcrypt.hash(req.body.password, 12); 
+		
+		let newUser = userModel.build( 
+			{  
+				first_name: req.body.first_name, 
+				last_name: req.body.last_name, 
+				email: req.body.email, 
+				password_salt: password_hash 
+			} 
+		); 
+		await newUser.save(); 
+		res.redirect("/"); 
+	} 
+	catch(ex) { 
+		res.render('error', {message: 'Error connecting to MySQL'}); 
+		console.log("Error connecting to MySQL");
+		console.log(ex);
+	} 
+});
 
 
 module.exports = router;
