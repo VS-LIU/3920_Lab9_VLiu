@@ -88,7 +88,7 @@ router.get('/', async (req, res) => {
 }); 
 
 router.get('/pets', async (req, res) => { 
-	console.log("page hit: router.get('/pets', async (req, res)"); 
+	console.log("page hit: GET: /pets"); 
 	try { 
 		const pets = await petModel.findAll(
 			{
@@ -109,6 +109,36 @@ router.get('/pets', async (req, res) => {
 		console.log(ex); 
 	} 
 }); 
+
+
+router.get('/showPets', async (req, res) => {
+	console.log("page hit: GET: /showPets");
+	try {
+		let userId = req.query.id;
+		console.log("userId: "+userId);
+		const user = await userModel.findByPk(userId);
+		if (user === null) {
+			res.render('error', {message: 'Error connecting to MySQL'});
+			console.log("Error connecting to userModel");
+		}
+		else {
+			let pets = await user.getPets();
+			console.log("/showPets: pets");
+			console.log(user);
+			let owner = await pets[0].getOwner();
+			console.log("/showPets: owner");
+			console.log(owner);
+
+			res.render('pets', {allPets: pets, owner: owner});
+
+		}
+	}
+	catch(ex) {
+		res.render('error', {message: 'Error connecting to MySQL'});
+		console.log("Error connecting to MySQL");
+		console.log(ex);
+	}
+});
 
 
 router.get('/deleteUser', async (req, res) => { 
